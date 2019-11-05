@@ -37,9 +37,9 @@ void main()
     {
         printf("###CADASTRO REALIZADO COM SUCESSO###\n");
         printf("###DADOS DO CLIENTE###\n");
-        printf("......Nome do Cliente: %s\n",Cliente.nome);
+        printf("......Nome do Cliente: %s",Cliente.nome);
         printf("......Data de Nascimento do Cliente: %d/%d/%d\n",Cliente.dataNascimento.dia,Cliente.dataNascimento.mes,Cliente.dataNascimento.ano);
-        printf(".......CPF do Cliente: %s\n",Cliente.CPF);
+        printf("......CPF do Cliente: %s\n",Cliente.CPF);
         printf("......Sexo do Cliente: %c\n",Cliente.sexo);
     }
     if(v1==0)
@@ -59,9 +59,11 @@ void cadastrarCliente()
     printf("Informe o nome do Cliente\n");
     fgets(Cliente.nome,50,stdin);
     
-    printf("Informe a data de nacimento(Dia/mes/ano)\n");
+    printf("Informe a dia do Nascimento\n");
     scanf("%d",&Cliente.dataNascimento.dia);
+    printf("Informe a mes do Nascimento\n");
     scanf("%d",&Cliente.dataNascimento.mes);
+    printf("Informe a ano do Nascimento\n");
     scanf("%d",&Cliente.dataNascimento.ano);
     
     printf("Informe o CPF do Cliente\n");
