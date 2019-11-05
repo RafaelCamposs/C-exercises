@@ -110,6 +110,7 @@ int validardtnasc(int d,int m,int a)
     else
         return 0;
 }
+
 int validarcpf(char c[15])
 {
     int len;
@@ -119,6 +120,7 @@ int validarcpf(char c[15])
     else
         return 0;
 }
+
 int validarsexo(char s)
 {
     if(s=='M' || s=='m' || s=='F' || s=='f' || s=='O'  || s=='o')
