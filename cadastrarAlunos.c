@@ -19,7 +19,7 @@ typedef struct cadAluno
     char sexo;
 } Lista_aluno;
 
-
+//escopo de funções
 int validarnome(char nm[50]);
 int validardtnasc(int d, int m, int a);
 int validarcpf(char c[15]);
@@ -27,8 +27,9 @@ int validarsexo(char s);
 int validarmatricula(int mat);
 int matricula_Aluno(int qtd,Lista_aluno Alunos[]);
 int menu_opcoes();
-int remover_aluno();
-void listar_aluno();
+void listar_aluno(Lista_aluno Alunos[]);
+void status_aluno(Lista_aluno Alunos[]);
+void retirar_aluno(Lista_aluno Alunos[]);
 
 int main()
 {
@@ -38,6 +39,9 @@ int main()
     int qtdaluno=0;
     Lista_aluno Aluno[TAMANHO_LISTA];
     
+    //inicializando as matriculas como inativas
+    status_aluno(Aluno);
+    
     while(opcao!=4)
     {
         opcao=menu_opcoes();
@@ -45,30 +49,34 @@ int main()
         {
             case 1:
             {
+                printf("\n###CADASTRO DE ALUNO###\n");
                 status_matricula = matricula_Aluno(qtdaluno, Aluno);
                 if(status_matricula==1)
                 {
-                printf("### MATRICULA REALIZADA COM SUCESSO###\n");
+                printf("\n### MATRICULA REALIZADA COM SUCESSO###\n");
                 qtdaluno++;
+                printf("\n");
                 }
                 else
-                printf("###FALHA NA MATRICULA###\n");
+                printf("\n###FALHA NA MATRICULA###\n");
+                printf("\n");
                 break;
             }
             case 2:
             {
-                printf("Listando Alunos\n");
+                printf("###LISTA DE ALUNOS###\n");
                 listar_aluno(Aluno);
                 break;
             }
             case 3:
             {
-                printf("Opcao nao disponivel\n");
+                printf("###REMOVER ALUNOS###\n");
+                retirar_aluno(Aluno);
                 break;
             }
             case 4:
             {
-                printf("\nSaindo da escola\n");
+                printf("\n###SAINDO DO CADASTRO DE ALUNOS###\n");
                 break;
             }
         
@@ -126,15 +134,15 @@ int matricula_Aluno(int qtd, Lista_aluno Alunos[])
         return 1;
     }
     if(v1==0)
-        printf("ERRO_NOME_INVALIDO\n");
+        printf("\nERRO_NOME_INVALIDO\n");
     if(v2==0)
-        printf("ERRO_DATA_INVALIDA\n");
+        printf("\nERRO_DATA_INVALIDA\n");
     if(v3==0)
-        printf("ERRO_CPF_INVALIDO\n");
+        printf("\nERRO_CPF_INVALIDO\n");
     if(v4==0)
-        printf("ERR0_SEXO_INVALIDO\n");
+        printf("\nERR0_SEXO_INVALIDO\n");
     if(v5==0)
-        printf("ERRO_MATRICULA_INVALIDA\n");
+        printf("\nERRO_MATRICULA_INVALIDA\n");
     return 0;
     
 }
@@ -187,7 +195,7 @@ int validarsexo(char s)
 
 int validarmatricula(int mat)
 {
-    if(mat>0)
+    if(mat>=-1)
         return 1;
     else
         return 0;
@@ -199,6 +207,7 @@ int menu_opcoes()
     
     printf("###MENU ESCOLA###\n");
     printf("Informe a opcao\n");
+    printf("\n");
     printf("1.Cadastro de Alunos\n");
     printf("2.Relatórios de Alunos\n");
     printf("3.Remover Alunos\n");
@@ -211,10 +220,29 @@ void listar_aluno(Lista_aluno Alunos[])
 {
     int x;
     
-    for(x=0;x<10;x++)
+    for(x=0;x<TAMANHO_LISTA;x++)
     {
+        if(Alunos[x].matricula!=-1)
         printf("%d. %s\n",x+1,Alunos[x].nome);
     }
 }
 
+void status_aluno(Lista_aluno Alunos[])
+{
+    int x;
+    
+    for(x=0;x<TAMANHO_LISTA;x++)
+        Alunos[x].matricula = -1;
+}
 
+void retirar_aluno(Lista_aluno Alunos[])
+{
+    int del;
+    
+    printf("Informe o número do Aluno\n");
+    listar_aluno(Alunos);
+    scanf("%d",&del);
+    Alunos[del-1].matricula=-1;
+    listar_aluno(Alunos);
+}
+    
