@@ -29,7 +29,7 @@ int matricula_Aluno(int qtd,Lista_aluno Alunos[]);
 int menu_opcoes();
 void listar_aluno(Lista_aluno Alunos[]);
 void status_aluno(Lista_aluno Alunos[]);
-void retirar_aluno(Lista_aluno Alunos[]);
+int retirar_aluno(Lista_aluno Alunos[]);
 
 int main()
 {
@@ -71,7 +71,7 @@ int main()
             case 3:
             {
                 printf("###REMOVER ALUNOS###\n");
-                retirar_aluno(Aluno);
+                qtdaluno=retirar_aluno(Aluno);
                 break;
             }
             case 4:
@@ -92,6 +92,17 @@ int main()
 int matricula_Aluno(int qtd, Lista_aluno Alunos[])
 {
     int v1,v2,v3,v4,v5;
+    int ver;
+    
+    for(ver=0;ver<TAMANHO_LISTA;ver++)
+    {
+        if(Alunos[qtd].matricula!=-1)
+            qtd++;
+        else
+            break;
+    }
+    
+    
     
     printf("Informe a matricula do aluno\n");
     scanf("%d",&Alunos[qtd].matricula);
@@ -235,7 +246,7 @@ void status_aluno(Lista_aluno Alunos[])
         Alunos[x].matricula = -1;
 }
 
-void retirar_aluno(Lista_aluno Alunos[])
+int retirar_aluno(Lista_aluno Alunos[])
 {
     int del;
     
@@ -244,5 +255,8 @@ void retirar_aluno(Lista_aluno Alunos[])
     scanf("%d",&del);
     Alunos[del-1].matricula=-1;
     listar_aluno(Alunos);
+    del--;
+    
+    return del;
 }
     
