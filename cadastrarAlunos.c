@@ -29,11 +29,10 @@ int matricula_Aluno(int qtd,Lista_aluno Alunos[]);
 int menu_opcoes();
 void listar_aluno(Lista_aluno Alunos[]);
 void status_aluno(Lista_aluno Alunos[]);
-int retirar_aluno(Lista_aluno Alunos[]);
+void retirar_aluno(int qtd,Lista_aluno Alunos[]);
 
 int main()
 {
-    int x;
     int opcao;
     int status_matricula;
     int qtdaluno=0;
@@ -49,19 +48,28 @@ int main()
         {
             case 1:
             {
-                printf("\n###CADASTRO DE ALUNO###\n");
-                status_matricula = matricula_Aluno(qtdaluno, Aluno);
-                if(status_matricula==1)
-                {
-                printf("\n### MATRICULA REALIZADA COM SUCESSO###\n");
-                qtdaluno++;
-                printf("\n");
-                }
+                if(qtdaluno<TAMANHO_LISTA)
+                {   
+                    printf("\n###CADASTRO DE ALUNO###\n");
+                    status_matricula = matricula_Aluno(qtdaluno, Aluno);
+                    if(status_matricula==1)
+                    {
+                    printf("\n### MATRICULA REALIZADA COM SUCESSO###\n");
+                    qtdaluno++;
+                    printf("\n");
+                    }
+                    else
+                    printf("\n###FALHA NA MATRICULA###\n");
+                    printf("\n");
+                    break;
+                } 
                 else
-                printf("\n###FALHA NA MATRICULA###\n");
-                printf("\n");
-                break;
-            }
+                {
+                    printf("\n###NUMERO_MAXIMO_ATINGIDO###\n");
+                    break;
+                }      
+            
+        }
             case 2:
             {
                 printf("###LISTA DE ALUNOS###\n");
@@ -71,7 +79,11 @@ int main()
             case 3:
             {
                 printf("###REMOVER ALUNOS###\n");
-                qtdaluno=retirar_aluno(Aluno);
+                retirar_aluno(qtdaluno,Aluno);
+                if(qtdaluno>0)
+                    qtdaluno--;
+                else
+                    printf("\n###NENHUM_ALUNO_CADASTRADO###\n");
                 break;
             }
             case 4:
@@ -114,13 +126,13 @@ int matricula_Aluno(int qtd, Lista_aluno Alunos[])
     if(Alunos[qtd].nome[ln]=='\n')
             Alunos[qtd].nome[ln]='\0';
     
-    printf("Informe a dia do Nascimento\n");
+    printf("Informe o dia de Nascimento\n");
     scanf("%d",&Alunos[qtd].dtnasc.dia);
     
-    printf("Informe a mes do Nascimento\n");
+    printf("Informe o mes de Nascimento\n");
     scanf("%d",&Alunos[qtd].dtnasc.mes);
     
-    printf("Informe a ano do Nascimento\n");
+    printf("Informe o ano de Nascimento\n");
     scanf("%d",&Alunos[qtd].dtnasc.ano);
     getchar();
         
@@ -131,7 +143,7 @@ int matricula_Aluno(int qtd, Lista_aluno Alunos[])
             Alunos[qtd].CPF[ln]='\0';
         
     printf("Infome o sexo do Aluno(F, M ou O)\n");
-    scanf("%s",&Alunos[qtd].sexo);
+    scanf("%c",&Alunos[qtd].sexo);
     
     //Validação dos dados inseridos//
     v1=validarnome(Alunos[qtd].nome);
@@ -162,7 +174,7 @@ int validarnome(char nm[])
 {
     int tam;
     tam=strlen(nm);
-    if(tam>20)
+    if(tam>10)
         return 1;
      else
         return 0;
@@ -233,8 +245,15 @@ void listar_aluno(Lista_aluno Alunos[])
     
     for(x=0;x<TAMANHO_LISTA;x++)
     {
-        if(Alunos[x].matricula!=-1)
-        printf("%d. %s\n",x+1,Alunos[x].nome);
+        if(Alunos[x].matricula!=-1) 
+        {
+            printf("%d. Nome: %s\n",x+1,Alunos[x].nome);
+            printf("Matricula: %d\n",Alunos[x].matricula);
+            printf("Data de Nascimento : %d/%d/%d\n",Alunos[x].dtnasc.dia,Alunos[x].dtnasc.mes,Alunos[x].dtnasc.ano);
+            printf("CPF : %s\n",Alunos[x].CPF);
+            printf("Sexo : %c\n",Alunos[x].sexo);
+            printf("\n");
+        }
     }
 }
 
@@ -246,17 +265,26 @@ void status_aluno(Lista_aluno Alunos[])
         Alunos[x].matricula = -1;
 }
 
-int retirar_aluno(Lista_aluno Alunos[])
+void retirar_aluno(int qtd,Lista_aluno Alunos[])
 {
     int del;
-    
+    int cont;
     printf("Informe o número do Aluno\n");
     listar_aluno(Alunos);
     scanf("%d",&del);
-    Alunos[del-1].matricula=-1;
-    listar_aluno(Alunos);
     del--;
+    for(cont=del;Alunos[cont].matricula!=-1;cont++)
+    {
+        Alunos[cont].matricula=Alunos[cont+1].matricula;
+        Alunos[cont].sexo=Alunos[cont+1].sexo;
+        Alunos[cont].dtnasc.dia=Alunos[cont+1].dtnasc.dia;
+        Alunos[cont].dtnasc.mes=Alunos[cont+1].dtnasc.mes;
+        Alunos[cont].dtnasc.ano=Alunos[cont+1].dtnasc.ano;
+        strcpy(Alunos[cont].nome,Alunos[cont+1].nome);
+        strcpy(Alunos[cont].CPF,Alunos[cont+1].CPF);
+    }
     
-    return del;
+    listar_aluno(Alunos);
+    return ;
 }
     
