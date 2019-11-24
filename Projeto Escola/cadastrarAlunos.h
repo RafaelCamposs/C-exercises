@@ -19,18 +19,20 @@ typedef struct cadAluno
     char sexo;
 } Lista_aluno;
 
-//escopo de funções
+//escopo de funções de validação
 int validarnome(char nm[50]);
 int validardtnasc(int d, int m, int a);
 int validarcpf(char c[15]);
 int validarsexo(char s);
-int validarmatricula(int mat);
+int validarmatriculaaluno(int mat,Lista_aluno Alunos[]);
+
+//escopo de funções de cadastramento
 int matricula_Aluno(int qtd,Lista_aluno Alunos[]);
 int menu_opcoesalunos();
 void listar_aluno(Lista_aluno Alunos[]);
 void status_aluno(Lista_aluno Alunos[]);
 void retirar_aluno(int qtd,Lista_aluno Alunos[]);
-void alterar_aluno(Lista_aluno Alunos[]);
+void alterar_aluno(int qtd,Lista_aluno Alunos[]);
 int menu_alunos();
 
    
@@ -72,10 +74,11 @@ int matricula_Aluno(int qtd, Lista_aluno Alunos[])
     getchar();
         
     printf("Informe o CPF do Aluno\n");
-    fgets(Alunos[qtd].CPF,15,stdin);
+    fgets(Alunos[qtd].CPF,16,stdin);
     ln= strlen(Alunos[qtd].CPF)-1;
     if(Alunos[qtd].CPF[ln]=='\n')
             Alunos[qtd].CPF[ln]='\0';
+    
         
     printf("Infome o sexo do Aluno(F, M ou O)\n");
     scanf("%c",&Alunos[qtd].sexo);
@@ -85,7 +88,7 @@ int matricula_Aluno(int qtd, Lista_aluno Alunos[])
     v2=validardtnasc(Alunos[qtd].dtnasc.dia,Alunos[qtd].dtnasc.mes,Alunos[qtd].dtnasc.ano);
     v3=validarcpf(Alunos[qtd].CPF);
     v4=validarsexo(Alunos[qtd].sexo);
-    v5=validarmatricula(Alunos[qtd].matricula);
+    v5=validarmatriculaaluno(Alunos[qtd].matricula,Alunos);
     
     if(v1==1 && v2==1 && v3==1 && v4==1 && v5==1)
     {
@@ -137,6 +140,7 @@ int validarcpf(char c[])
 {
     int len;
     len = strlen(c);
+    
     if(len==14 || len==11)
         return 1;
     else
@@ -151,9 +155,18 @@ int validarsexo(char s)
         return 0;
 }
 
-int validarmatricula(int mat)
+int validarmatriculaaluno(int mat, Lista_aluno Alunos[])
 {
-    if(mat>=-1)
+    int icont=0;
+    int x;
+    
+    for(x=0;x<TAMANHO_LISTA;x++)
+    {
+        if(mat==Alunos[x].matricula)
+            icont++;
+    }
+
+    if(mat>=-1 && icont<=1)
         return 1;
     else
         return 0;
@@ -224,7 +237,7 @@ void retirar_aluno(int qtd,Lista_aluno Alunos[])
     return ;
 }
 
-void alterar_aluno(Lista_aluno Alunos[])
+void alterar_aluno(int qtd,Lista_aluno Alunos[])
 {
     int alt;
     int op;
@@ -233,18 +246,28 @@ void alterar_aluno(Lista_aluno Alunos[])
     char altname[50];
     char altchar;
     
-    printf("Informe o Aluno que quer alterar\n");
-    listar_aluno(Alunos);
-    scanf("%d",&alt);
-    alt--;
-    printf("Informe que dado alterar\n");
-    printf("1.Matricula\n");
-    printf("2.Nome\n");
-    printf("3.Data de Nascimento\n");
-    printf("4.CPF\n");
-    printf("5.Sexo\n");
-    scanf("%d",&op);
-    getchar();
+    if(qtd>0)
+    {
+        printf("Informe o Aluno que quer alterar\n");
+        printf("\n");
+        listar_aluno(Alunos);
+        scanf("%d",&alt);
+        alt--;
+        printf("Informe que dado alterar\n");
+        printf("\n");
+        printf("1.Matricula\n");
+        printf("2.Nome\n");
+        printf("3.Data de Nascimento\n");
+        printf("4.CPF\n");
+        printf("5.Sexo\n");
+        scanf("%d",&op);
+        getchar();
+    }
+    else
+    {
+        printf("Nenhum Aluno Cadastrado\n");
+        return;
+    }
     
     switch(op)
     {
@@ -252,7 +275,7 @@ void alterar_aluno(Lista_aluno Alunos[])
         {
             printf("Informe a nova matricula\n");
             scanf("%d",&altnum);
-            ver=validarmatricula(altnum);
+            ver=validarmatriculaaluno(altnum,Alunos);
             if(ver==1)
             {
                 Alunos[alt].matricula=altnum;
@@ -377,6 +400,7 @@ int menu_alunos(int qtdaluno,Lista_aluno Aluno[])
                     }
                     else
                     printf("\n###FALHA NA MATRICULA###\n");
+                    Aluno[qtdaluno].matricula=-1;
                     printf("\n");
                     break;
                 } 
@@ -406,7 +430,7 @@ int menu_alunos(int qtdaluno,Lista_aluno Aluno[])
             case 4:
             {
                 printf("\n###ALTERAR DADOS DE ALUNOS###\n");
-                alterar_aluno(Aluno);
+                alterar_aluno(qtdaluno,Aluno);
                 break;
             }
             case 5:

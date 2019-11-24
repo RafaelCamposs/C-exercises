@@ -13,16 +13,16 @@ typedef struct cadProf
     char sexo;
 } Lista_Prof;
 
-//escopo de funções
-
+//escopo de funções de cadastramento
 int matricula_Professor(int qtd,Lista_Prof Professores[]);
 void listar_Professor(Lista_Prof Professores[]);
 void status_Professor(Lista_Prof Professores[]);
 void retirar_Professor(int qtd,Lista_Prof Professores[]);
-void alterar_professor(Lista_Prof Professores[]);
+void alterar_professor(int qtd,Lista_Prof Professores[]);
 int menu_professor();
 int menu_opcoesprofessores();
-            
+//Função de validar matricula particular para Professores
+int validarmatriculaprof(int mat,Lista_Prof Professores[]);
 
 int matricula_Professor(int qtd, Lista_Prof Professores[])
 {
@@ -60,7 +60,7 @@ int matricula_Professor(int qtd, Lista_Prof Professores[])
     getchar();
         
     printf("Informe o CPF do Professor\n");
-    fgets(Professores[qtd].CPF,15,stdin);
+    fgets(Professores[qtd].CPF,16,stdin);
     ln= strlen(Professores[qtd].CPF)-1;
     if(Professores[qtd].CPF[ln]=='\n')
             Professores[qtd].CPF[ln]='\0';
@@ -73,7 +73,7 @@ int matricula_Professor(int qtd, Lista_Prof Professores[])
     v2=validardtnasc(Professores[qtd].dtnasc.dia,Professores[qtd].dtnasc.mes,Professores[qtd].dtnasc.ano);
     v3=validarcpf(Professores[qtd].CPF);
     v4=validarsexo(Professores[qtd].sexo);
-    v5=validarmatricula(Professores[qtd].matricula);
+    v5=validarmatriculaprof(Professores[qtd].matricula,Professores);
     
     if(v1==1 && v2==1 && v3==1 && v4==1 && v5==1)
     {
@@ -143,7 +143,7 @@ void retirar_Professor(int qtd,Lista_Prof Professores[])
     return ;
 }
     
-void alterar_professor(Lista_Prof Professores[])
+void alterar_professor(int qtd,Lista_Prof Professores[])
 {
     int alt;
     int op;
@@ -151,19 +151,28 @@ void alterar_professor(Lista_Prof Professores[])
     int altnum,altdia,altmes,altano;
     char altname[50];
     char altchar;
-    
-    printf("Informe o Professor que quer alterar\n");
-    listar_Professor(Professores);
-    scanf("%d",&alt);
-    alt--;
-    printf("Informe que dado alterar\n");
-    printf("1.Matricula\n");
-    printf("2.Nome\n");
-    printf("3.Data de Nascimento\n");
-    printf("4.CPF\n");
-    printf("5.Sexo\n");
-    scanf("%d",&op);
-    getchar();
+    if(qtd>0)
+    {
+        printf("Informe o Professor que quer alterar\n");
+        printf("\n");
+        listar_Professor(Professores);
+        scanf("%d",&alt);
+        alt--;
+        printf("Informe que dado alterar\n");
+        printf("\n");
+        printf("1.Matricula\n");
+        printf("2.Nome\n");
+        printf("3.Data de Nascimento\n");
+        printf("4.CPF\n");
+        printf("5.Sexo\n");
+        scanf("%d",&op);
+        getchar();
+    }
+    else
+    {
+        printf("Nenhum Professor Cadastrado\n");
+        return;
+    }
     
     switch(op)
     {
@@ -171,7 +180,7 @@ void alterar_professor(Lista_Prof Professores[])
         {
             printf("Informe a nova matricula\n");
             scanf("%d",&altnum);
-            ver=validarmatricula(altnum);
+            ver=validarmatriculaprof(altnum,Professores);
             if(ver==1)
             {
                 Professores[alt].matricula=altnum;
@@ -295,6 +304,7 @@ int menu_professor(int qtdprof,Lista_Prof Professor[])
                     }
                     else
                     printf("\n###FALHA NA MATRICULA###\n");
+                    Professor[qtdprof].matricula=-1;
                     printf("\n");
                     break;
                 } 
@@ -324,7 +334,7 @@ int menu_professor(int qtdprof,Lista_Prof Professor[])
             case 4:
             {
                 printf("\n###ALTERAR DADOS DE PROFESSORES###\n");
-                alterar_professor(Professor);
+                alterar_professor(qtdprof,Professor);
                 break;
             }
             case 5:
@@ -354,4 +364,18 @@ int menu_opcoesprofessores()
     return op;
 }
 
+int validarmatriculaprof(int mat, Lista_Prof Professores[])
+{
+    int icont=0;
+    int x;
     
+    for(x=0;x<TAMANHO_LISTA;x++)
+    {
+        if(mat==Professores[x].matricula)
+            icont++;
+    }
+    if(mat>=-1 && icont<=1)
+        return 1;
+    else
+        return 0;
+}
