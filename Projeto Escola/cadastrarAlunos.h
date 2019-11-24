@@ -57,7 +57,7 @@ int matricula_Aluno(int qtd, Lista_aluno Alunos[])
     scanf("%d",&Alunos[qtd].matricula);
     getchar();
     
-    printf("Informe o nome do Aluno\n");
+    printf("Informe o nome e sobrenome do Aluno\n");
     fgets(Alunos[qtd].nome,40,stdin);
     size_t ln= strlen(Alunos[qtd].nome)-1;
     if(Alunos[qtd].nome[ln]=='\n')
@@ -420,9 +420,11 @@ int menu_alunos(int qtdaluno,Lista_aluno Aluno[])
             case 3:
             {
                 printf("###REMOVER ALUNOS###\n");
-                retirar_aluno(qtdaluno,Aluno);
                 if(qtdaluno>0)
+                {
+                    retirar_aluno(qtdaluno,Aluno);
                     qtdaluno--;
+                }
                 else
                     printf("\n###NENHUM_ALUNO_CADASTRADO###\n");
                 break;

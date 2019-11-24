@@ -43,7 +43,7 @@ int matricula_Professor(int qtd, Lista_Prof Professores[])
     scanf("%d",&Professores[qtd].matricula);
     getchar();
     
-    printf("Informe o nome do Professor\n");
+    printf("Informe o nome e sobrenome do Professor\n");
     fgets(Professores[qtd].nome,40,stdin);
     size_t ln= strlen(Professores[qtd].nome)-1;
     if(Professores[qtd].nome[ln]=='\n')
@@ -324,9 +324,11 @@ int menu_professor(int qtdprof,Lista_Prof Professor[])
             case 3:
             {
                 printf("###REMOVER Professores###\n");
-                retirar_Professor(qtdprof,Professor);
                 if(qtdprof>0)
+                {
+                    retirar_Professor(qtdprof,Professor);
                     qtdprof--;
+                }
                 else
                     printf("\n###NENHUM_PROFESSOR_CADASTRADO###\n");
                 break;

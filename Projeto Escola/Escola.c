@@ -1,6 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
-#include "cadastrarProfessores.h"
+#include "CadastroDisciplinas.h"
 #define TAM_LISTA 10
 
 int menu_principal();
@@ -8,15 +8,17 @@ int menu_principal();
 int main()
 {
     int opcao;
-    int qtdaluno=0,qtdprofessor=0;
+    int qtdaluno=0,qtdprofessor=0,qtddisciplina=0;
     Lista_aluno Aluno[TAM_LISTA];
     Lista_Prof Professor[TAM_LISTA];
+    Disciplina lista_disciplinas[TAM_DISCIPLINAS];
     
-    //inicializando as matriculas como inativas
+    //inicializando as matriculas como inativas e zerando o contador de alunos nas Disciplinas
     status_aluno(Aluno);
     status_Professor(Professor);
+    zerando_contador(lista_disciplinas);
     
-    while(opcao!=5)
+    while(opcao!=4)
     {
         opcao=menu_principal();
         switch(opcao)
@@ -31,6 +33,12 @@ int main()
                 qtdprofessor=menu_professor(qtdprofessor,Professor);
                 break;
             }
+            case 3:
+            {
+                qtddisciplina=menu_disciplinas(qtdaluno,qtddisciplina,qtdprofessor,Aluno,Professor,lista_disciplinas);
+                break;
+            }
+            
         }  
     }
     return 0;
@@ -47,8 +55,7 @@ int menu_principal()
     printf("1.Menu de Alunos\n");
     printf("2.Menu de Professores\n");
     printf("3.Menu de Disciplinas\n");
-    printf("4.Menu de Relatorios\n");
-    printf("5.Sair\n");
+    printf("4.Sair\n");
     scanf("%d",&op);
     
     return op;
