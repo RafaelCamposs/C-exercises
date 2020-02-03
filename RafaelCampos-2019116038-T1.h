@@ -25,19 +25,13 @@
 #include <string.h>
 #include <stdlib.h>
 
-struct intdatas
-{
-    int dia;
-    int mes;
-    int ano;
-};
 
 int validadata(int d,int m,int a);
 int bissexto(int a);
 int ehNumero(char c);
 int q1(char data[]);
 int transforma_dias(int d,int m,int a);
-void transforma_data(char data[],struct intdatas dma);
+int transforma_data(char data[],int dma[]);
 int switch_specialChar(int v);
 void remove_specialcaracter(char vet[], int tam);
 void preenche_vetor(int v1[], int v2[], int tam);
@@ -90,7 +84,7 @@ int q1(char data[]){
         if(j>1)
             return 0;
     }
-    
+
     sMes[j]='\0';
     i++;
     iMes = atoi(sMes);
@@ -116,8 +110,13 @@ int q1(char data[]){
     if(bis==1){
         if(iDia<=29 && iMes==2)
             return 1;
-        else
-            return 0;
+        else if(iMes!=2){
+            validacao=validadata(iDia,iMes,iAno);
+            if(validacao==1)
+                return 1;
+            else
+                return 0;
+        }
     }
     else{
         validacao =validadata(iDia,iMes,iAno);
@@ -142,13 +141,18 @@ int q1(char data[]){
 int q2(char *datainicial, char *datafinal, int *qtdDias, int *qtdMeses, int *qtdAnos){
     
     //calcule os dados e armazene nas três variáveis a seguir
-    int nDias, nMeses, nAnos;
-    int diaI,mesI,anoI;
-    int diaF,mesF,anoF;
-    int mes,dia=0;
+    int nDias=0, nMeses=0, nAnos=0;
+    
+    int diaI=0,mesI=0,anoI=0;
+    int diaF=0,mesF=0,anoF=0;
+    int mes=0,dia=0;
     int totalI,totalF,difIF;
-    struct intdatas dma;
-    int ano[12];
+    int dma[3];
+    int ano[12],retorno;
+    
+    dma[0]=-1;
+    dma[1]=-1;
+    dma[2]=-1;
     
     ano[0]=31;
     ano[1]=28;
@@ -165,55 +169,57 @@ int q2(char *datainicial, char *datafinal, int *qtdDias, int *qtdMeses, int *qtd
     
     if (q1(datainicial) == 0)
         return 2;
-
     if (q1(datafinal) == 0)
         return 3;
     
-//     transforma_data(datainicial,dma);
-//     diaI=dma.dia;
-//     mesI=dma.mes;
-//     anoI=dma.ano;
-//     
-//     totalI=transforma_dias(diaI,mesI,anoI);
-//     
-//     transforma_data(datafinal,dma);
-//     diaF=dma.dia;
-//     mesF=dma.mes;
-//     anoF=dma.ano;
-//     
-//     totalF=transforma_dias(diaF,mesF,anoF);
-//     
-//     if(totalI>totalF)
-//         return 4;
-//     
-//     difIF=totalF-totalI;;
-//     for(;anoI!=anoF;anoI++)
-//     {
-//         if(bissexto(anoI)==1){
-//             difIF=difIF-366;
-//             nAnos++;
-//         }
-//         else{
-//             difIF=difIF-365;
-//             nAnos++;
-//         }
-//     }
-//     while(difIF>28){
-//         for(mes=mesI-1;mesI!=mesF && diaI!=diaF;){
-//             diaI++;
-//             difIF--;
-//             dia++;
-//             if(dia==ano[mes]){
-//                 nMeses++;
-//                 mes++;
-//                 dia=0;
-//             }
-//         }
-//     }
-//     
-//     nDias=difIF;
+    retorno=transforma_data(datainicial,dma);
     
+    if(retorno == 1){
+        diaI=dma[0];
+        mesI=dma[1];
+        anoI=dma[2];
+    } 
+    totalI=transforma_dias(diaI,mesI,anoI);
     
+    retorno=transforma_data(datafinal,dma);
+    if(retorno == 1){
+        diaF=dma[0];
+        mesF=dma[1];
+        anoF=dma[2];
+    }
+    totalF=transforma_dias(diaF,mesF,anoF);
+    
+    if(totalI>totalF)
+        return 4;
+    
+    difIF=totalF-totalI;
+
+    for(;anoI!=anoF;anoI++)
+    {
+        if(bissexto(anoF)==1){
+            difIF=difIF-366;
+            nAnos++;
+        }
+        else{
+            difIF=difIF-365;
+            nAnos++;
+        }
+    }
+    while(difIF>28){
+        for(mes=mesI-1;mesI!=mesF && diaI!=diaF;){
+            diaI++;
+            difIF--;
+            dia++;
+            if(dia==ano[mes]){
+                nMeses++;
+                mes++;
+                dia=0;
+            }
+        }
+        
+    }
+    
+    nDias=difIF;
     
     /*mantenha o código abaixo, para salvar os dados em 
     nos parâmetros da funcao
@@ -461,12 +467,16 @@ int validadata(int d,int m,int a)
         else
             return 0;
     }
-    if(d <= 31 && d > 0)
+    else if(d <= 31 && d > 0)
         if(m <= 12 &&  m > 0)
             if(a > 0)
                 return 1;
             else
                 return 0;
+        else
+            return 0;
+    else
+        return 0;
                 
 }
 
@@ -487,7 +497,7 @@ int bissexto(int a)
             
 }
             
-void transforma_data(char data[],struct intdatas dma)
+int transforma_data(char data[],int dma[])
 {
 
     int iDia;
@@ -500,56 +510,57 @@ void transforma_data(char data[],struct intdatas dma)
     
     int i,j;
 
-    dma.dia=0;
-    dma.mes=0;
-    dma.ano=0;
+    dma[0]=0;
+    dma[1]=0;
+    dma[2]=0;
     
     for(i=0;data[i]!='/';i++)
     {
         if(ehNumero(data[i])!=0)
             sDia[i]=data[i];
         else
-            return ;
+            return 0;
         if(i>1)
-            return ;
+            return 0;
     }
-    
     sDia[i]='\0';
     i++;
     iDia = atoi(sDia);
-    dma.dia=iDia;
+    dma[0]=iDia;
     
     for(j=0;data[i]!='/';i++,j++)
     {
         if(ehNumero(data[i])!=0)
             sMes[j]=data[i];
         else
-            return ;
+            return 0;
         if(j>1)
-            return ;
+            return 0;
     }
     
     sMes[j]='\0';
     i++;
     iMes = atoi(sMes);
-    dma.mes=iMes;
+    dma[1]=iMes;
     
     for(j=0;data[i]!='\0';i++,j++)
     {
         if(ehNumero(data[i])!=0)
             sAno[j]=data[i];
         else
-            return ;
+            return 0;
     }
-    
+
     if(j==5 || j==1 || j==3)
-        return ;
+        return 0;
     else
     {
         j++;
         iAno=atoi(sAno);
-        dma.ano=iAno;
+        dma[2]=iAno;
     }    
+    
+    return 1;
 }
 
 int transforma_dias(int d,int m,int a)
