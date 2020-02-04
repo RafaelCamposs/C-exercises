@@ -146,7 +146,7 @@ int q2(char *datainicial, char *datafinal, int *qtdDias, int *qtdMeses, int *qtd
     int diaI=0,mesI=0,anoI=0;
     int diaF=0,mesF=0,anoF=0;
     int mes=0,dia=0;
-    int totalI,totalF,difIF;
+    int totalI=0,totalF=0,difIF=0;
     int dma[3];
     int ano[12],retorno;
     
@@ -193,10 +193,10 @@ int q2(char *datainicial, char *datafinal, int *qtdDias, int *qtdMeses, int *qtd
         return 4;
     
     difIF=totalF-totalI;
-
-    for(;anoI!=anoF;anoI++)
+    mes=mesI-1;
+    while(anoI!=anoF)
     {
-        if(bissexto(anoF)==1){
+        if(bissexto(anoI)== 1){
             difIF=difIF-366;
             nAnos++;
         }
@@ -204,23 +204,24 @@ int q2(char *datainicial, char *datafinal, int *qtdDias, int *qtdMeses, int *qtd
             difIF=difIF-365;
             nAnos++;
         }
+    anoI++;    
     }
-    while(difIF>28){
-        for(mes=mesI-1;mesI!=mesF && diaI!=diaF;){
+    
+    if(difIF-ano[mes]>=0){
+        while(mesI!=mesF){
             diaI++;
             difIF--;
             dia++;
-            if(dia==ano[mes]){
+            if(dia == ano[mes]){
                 nMeses++;
                 mes++;
                 dia=0;
+                mesI++;
             }
         }
-        
     }
-    
-    nDias=difIF;
-    
+
+    nDias= difIF;
     /*mantenha o código abaixo, para salvar os dados em 
     nos parâmetros da funcao
     */
