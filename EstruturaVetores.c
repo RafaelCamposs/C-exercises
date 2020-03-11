@@ -114,7 +114,17 @@ Rertono (int)
     POSICAO_INVALIDA - Posição inválida para estrutura auxiliar
 */
 int excluirNumeroDoFinaldaEstrutura(int posicao){
-  int retorno = SUCESSO;
+    int retorno;
+    if(posicao < 1 || posicao > 10)
+        retorno = POSICAO_INVALIDA;
+    else if (vetor[posicao-1].EstAux == NULL)
+        retorno = SEM_ESTRUTURA_AUXILIAR;
+    else if(vetor[posicao-1].count == 0)
+        retorno = ESTRUTURA_AUXILIAR_VAZIA;
+    else{ 
+        vetor[posicao-1].count--; 
+        retorno = SUCESSO;
+    }
   return retorno;
 }
 
