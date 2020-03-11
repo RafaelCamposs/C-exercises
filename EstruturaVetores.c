@@ -142,7 +142,27 @@ Rertono (int)
 
 */
 int excluirNumeroEspecificoDeEstrutura(int valor, int posicao){
-  int retorno = SUCESSO;
+    int retorno = SUCESSO;
+    int x,y, GotHim=0;
+    if(posicao<1 || posicao >10)
+        retorno = POSICAO_INVALIDA;
+    if(vetor[posicao-1].EstAux == NULL)
+        retorno = SEM_ESTRUTURA_AUXILIAR;
+    if(vetor[posicao-1].count == 0)
+        retorno = ESTRUTURA_AUXILIAR_VAZIA;
+    else{
+        for(x=0;x <= vetor[posicao-1].count;x++){
+            if(valor == vetor[posicao-1].EstAux[x]){
+                GotHim=1;
+                retorno = SUCESSO
+                for(y=x;y <= vetor[posicao-1].count;y++)
+                    vetor[posicao-1].EstAux[y]= vetor[posicao-1].EstAux[y+1];
+            }
+        }
+        if(GotHim != 1)
+            retorno = NUMERO_INEXISTENTE; 
+    }
+  
   return retorno;
 }
 
