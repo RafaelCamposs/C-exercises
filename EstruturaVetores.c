@@ -1,17 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#define TAM 10
-
-typedef struct VetorPrincipal{
-    int count;
-    int tam;
-    int *EstAux;
-}Estrutura;
-
 
 #include "EstruturaVetores.h"
 
-Estrutura vetor[TAM];
 
 void dobrar(int *x){
 
@@ -122,7 +113,7 @@ int excluirNumeroDoFinaldaEstrutura(int posicao){
     else if(vetor[posicao-1].count == 0)
         retorno = ESTRUTURA_AUXILIAR_VAZIA;
     else{ 
-        vetor[posicao-1].count--; 
+        vetor[posicao-1].count--;
         retorno = SUCESSO;
     }
   return retorno;
@@ -154,7 +145,7 @@ int excluirNumeroEspecificoDeEstrutura(int valor, int posicao){
         for(x=0;x <= vetor[posicao-1].count;x++){
             if(valor == vetor[posicao-1].EstAux[x]){
                 GotHim=1;
-                retorno = SUCESSO
+                retorno = SUCESSO;
                 for(y=x;y <= vetor[posicao-1].count;y++)
                     vetor[posicao-1].EstAux[y]= vetor[posicao-1].EstAux[y+1];
             }
@@ -188,8 +179,18 @@ Retorno (int)
 int getDadosEstruturaAuxiliar(int posicao, int vetorAux[]){
 
     int retorno = 0;
-
-
+    int x;
+    if(ehPosicaoValida(posicao) != SUCESSO)
+            retorno =  POSICAO_INVALIDA;
+    else if(vetor[posicao-1].EstAux == NULL)
+            retorno = SEM_ESTRUTURA_AUXILIAR;
+    else{
+        for(x=0;x < vetor[posicao-1].count;x++)
+            vetorAux[x]=vetor[posicao-1].EstAux[x];
+    
+        retorno = SUCESSO;
+    }
+    
     return retorno;
 
 }
@@ -207,7 +208,19 @@ Rertono (int)
 int getDadosOrdenadosEstruturaAuxiliar(int posicao, int vetorAux[]){
 
     int retorno = 0;
-
+    int x;
+        
+    if(ehPosicaoValida(posicao) != SUCESSO)
+            retorno =  POSICAO_INVALIDA;
+    else if(vetor[posicao-1].EstAux == NULL)
+            retorno = SEM_ESTRUTURA_AUXILIAR;
+    else{
+        for(x=0;x < vetor[posicao-1].count;x++)
+            vetorAux[x]=vetor[posicao-1].EstAux[x];
+        ordena(vetorAux,vetor[posicao-1].tam);
+        retorno = SUCESSO;
+    }
+    
 
     return retorno;
 
@@ -224,7 +237,22 @@ Rertono (int)
 */
 int getDadosDeTodasEstruturasAuxiliares(int vetorAux[]){
 
-    int retorno = 0;
+    int retorno = 0,i,j=0;
+    int x;
+    for(i=0;i<10;i++){    
+        if(vetor[i].count == 0)
+            j++;
+    }
+    if(j==10)
+        retorno = TODAS_ESTRUTURAS_AUXILIARES_VAZIAS;
+    else{
+        for(x=0,i=0;i<10;i++){
+            for(j=0;j < vetor[i].count;x++,j++)
+                vetorAux[x]=vetor[i].EstAux[j];
+        }
+        retorno = SUCESSO;
+    }
+    
     return retorno;
 
 }
@@ -240,9 +268,27 @@ Rertono (int)
 */
 int getDadosOrdenadosDeTodasEstruturasAuxiliares(int vetorAux[]){
 
-    int retorno = 0;
+    int retorno = 0,i,j=0,tamtotal=0;
+    int x;
+    for(i=0;i<10;i++)
+        tamtotal = vetor[i].count+tamtotal;
+    
+    for(i=0;i<10;i++){    
+        if(vetor[i].count == 0)
+            j++;
+    }
+    if(j==10)
+        retorno = TODAS_ESTRUTURAS_AUXILIARES_VAZIAS;
+    else{
+        for(x=0,i=0;i<10;i++){
+            for(j=0;j < vetor[i].count;x++,j++)
+                vetorAux[x]=vetor[i].EstAux[j];
+        }
+        ordena(vetorAux,tamtotal);
+        retorno = SUCESSO;
+    }
+    
     return retorno;
-
 }
 
 /*
@@ -257,8 +303,25 @@ Rertono (int)
     SEM_ESPACO_DE_MEMORIA - erro na alocação do novo valor
 */
 int modificarTamanhoEstruturaAuxiliar(int posicao, int novoTamanho){
-
-    int retorno = 0;
+    int retorno;
+    if(ehPosicaoValida(posicao) != SUCESSO)
+            retorno =  POSICAO_INVALIDA;
+    else if(vetor[posicao-1].EstAux == NULL)
+            retorno = SEM_ESTRUTURA_AUXILIAR;
+    else if(vetor[posicao-1].tam+1+novoTamanho <= 0)
+            retorno = NOVO_TAMANHO_INVALIDO;
+    else{
+        novoTamanho = novoTamanho + vetor[posicao-1].tam+1;
+        vetor[posicao-1].EstAux=(int *) realloc(vetor[posicao-1].EstAux,novoTamanho);
+        if(vetor[posicao-1].tam+ 1 > novoTamanho)
+            vetor[posicao-1].count = vetor[posicao-1].tam+1-novoTamanho-1;    
+        vetor[posicao-1].tam=novoTamanho-1;
+        if(vetor[posicao-1].EstAux == NULL)
+            retorno = SEM_ESPACO_DE_MEMORIA;
+        else
+            retorno = SUCESSO;
+    }
+    
     return retorno;
 
 }
@@ -276,6 +339,14 @@ int getQuantidadeElementosEstruturaAuxiliar(int posicao){
 
     int retorno = 0;
 
+    if(posicao<1 || posicao >10)
+        retorno = POSICAO_INVALIDA;
+    if(vetor[posicao-1].EstAux == NULL)
+        retorno = SEM_ESTRUTURA_AUXILIAR;
+    if(vetor[posicao-1].count == 0)
+        retorno = ESTRUTURA_AUXILIAR_VAZIA;
+    else
+        retorno = vetor[posicao-1].count ;
 
     return retorno;
 
@@ -289,8 +360,49 @@ Retorno (No*)
     No*, ponteiro para o início da lista com cabeçote
 */
 No* montarListaEncadeadaComCabecote(){
+    
+    int i,tam = 0,vazio = 0;
+    
+    tam = verificacontadores();
+    vazio = verificarestruturas();
+    
+    if(vazio == 10)
+        return NULL;
 
-    return NULL;
+    
+    int vetorAuxiliar[tam];
+    getDadosDeTodasEstruturasAuxiliares(vetorAuxiliar);
+
+   
+    No *inicio;
+    No *busca = NULL;
+    No *novo;
+    No *cabecote = (No *) malloc(sizeof(No));
+    cabecote->prox = NULL;
+
+    inicio = cabecote;
+    
+    for(i = 0;i < tam; i++){
+        if(inicio ==  cabecote){
+            novo = (No*) malloc(sizeof(No));
+            cabecote->prox = novo;
+            novo->conteudo = vetorAuxiliar[i];
+            novo->prox = NULL;
+            inicio = novo;
+        }
+        else{
+            busca = inicio;
+            while (busca->prox != NULL){
+                busca = busca->prox;
+            }
+            novo = (No*) malloc(sizeof(No));
+            busca->prox = novo;
+            novo->prox = NULL;
+            novo ->conteudo = vetorAuxiliar[i];
+        }
+                
+    }
+    return cabecote;
 
 }
 
@@ -299,8 +411,15 @@ Objetivo: retorna os números da lista enceada com cabeçote armazenando em veto
 Retorno void
 */
 void getDadosListaEncadeadaComCabecote(No* inicio, int vetorAux[]){
+    int x=0;
+    No *busca = inicio->prox;
 
-
+    while(busca != NULL){
+        vetorAux[x] = busca->conteudo;
+        busca = busca->prox;
+        x++;
+    }
+ 
 }
 
 /*
@@ -309,8 +428,16 @@ Objetivo: Destruir a lista encadeada com cabeçote a partir de início.
 Retorno 
     void.
 */
-void destruirListaEncadeadaComCabecote(No* inicio){
-   
+void destruirListaEncadeadaComCabecote(No** inicio){
+    No *busca;
+    No *tmp;
+    busca = *inicio;
+    while(busca != NULL){
+        tmp = busca;
+        busca = busca ->prox;
+        free(tmp);
+    }
+    *inicio = busca;
 
 }
 
@@ -340,3 +467,38 @@ void finalizar(){
     
 }
 
+void ordena(int vetor[], int n){
+    int k, j, aux;
+
+    for (k = 1; k < n; k++) {
+        for (j = 0; j < n - 1; j++) {
+            if (vetor[j] > vetor[j + 1]) {
+                aux          = vetor[j];
+                vetor[j]     = vetor[j + 1];
+                vetor[j + 1] = aux;
+            }
+        }
+    }
+}
+
+int verificarestruturas(){
+    int x, count;
+
+    for(x=0;x<10;x++){
+        if(vetor[x].count == 0)
+            count ++;
+    }
+
+    return count;
+
+}
+
+int verificacontadores(){
+   int x, count = 0;
+
+    for(x=0;x<10;x++)
+        count = count + vetor[x].count;
+    
+    return count;
+
+}
